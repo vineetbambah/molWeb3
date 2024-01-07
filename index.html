@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review on blockchain</title>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- This imports the TailwindCSS library -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js" type="application/javascript"></script> <!-- this imports the ether.js library-->
+</head>
+<body>
+  <script>
+    const contractAddress="0xCec45F564051B2eA966C11945EACdBcc2a348a89";
+    const contractABI=[
+      {
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "_review",
+            "type": "string"
+          }
+        ],
+        "name": "setReviewBC",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "getReviewBC",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      }
+    ];
+    const provider = new ethers.providers.Web3Provider(window.ethereum,"sepolia");
+    provider.send("eth_requestAccounts",[]).then(()=>(provider.listAccounts().then((accounts)=>{
+      signer=provider.getSigner(accounts[0]);
+      contract= new ethers.Contract(contractAddress,contractABI,signer);
+    })))
+    async function setReview(){
+      const review = document.querySelector("#choice").value;
+      console.log(review);
+      await contract.setReviewBC(review);
+    }
+    async function getReview(){
+      const reviewFromBlockchain= await contract.getReviewBC();
+      document.querySelector("#review").innerText=`${signer._address}'s review : ${reviewFromBlockchain}`;
+    }
+  </script>
+    <div class ="bg-red-300 h-8 w-full grid place-content-center"><h1 class="font-bold">GDSC- NITJ</h1></div>
+    <div class="mt-48  grid place-content-center">
+  <p>This is my review for the GDSC Web 3 MOL Session</p>
+    <input type="text" id="choice" class="m-4 border border-sky-500 mr-0"><br>
+    <div class="ml-10">
+    <button class="bg-blue-200 p-2 rounded-md ml-2 w-32" onclick="setReview()">Log</button>
+    <button class="bg-blue-200 p-2 rounded-md ml-2 w-32" onclick="getReview()">Reveal</button><br>
+    <span id="review"></span>
+</div>
+</div>
+</body>
+</html>
